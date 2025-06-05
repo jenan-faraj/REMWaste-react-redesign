@@ -7,19 +7,18 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 
-export function OrderSummaryStep({ prevStep, darkMode }) {
+export function OrderSummaryStep({ prevStep, nextStep, darkMode }) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [saveCard, setSaveCard] = useState(false);
+
   const deliveryDate = localStorage.getItem("deliveryDate");
   const collectionDate = localStorage.getItem("collectionDate");
   const skipHireAddress = JSON.parse(localStorage.getItem("skipHireAddress"));
   const selectedSkip = JSON.parse(localStorage.getItem("selectedSkip"));
-  const selectedWasteTypes = JSON.parse(
-    localStorage.getItem("selectedWasteTypes")
-  );
   const roadPermitFee = 84.0;
 
   const subtotal = selectedSkip.price_before_vat + roadPermitFee;
@@ -51,6 +50,16 @@ export function OrderSummaryStep({ prevStep, darkMode }) {
 
       setTimeout(() => {
         setIsProcessing(false);
+        setPaymentSuccess(true);
+
+        setTimeout(() => {
+          nextStep({
+            paymentStatus: "completed",
+            paymentMethod: "card",
+            last4: paymentMethod.card.last4,
+            totalAmount: total,
+          });
+        }, 2000);
       }, 1500);
     } catch (err) {
       setPaymentError(err.message);
@@ -67,6 +76,45 @@ export function OrderSummaryStep({ prevStep, darkMode }) {
       },
     },
   };
+
+  if (paymentSuccess) {
+    return (
+      <div
+        className={`text-center py-12 ${
+          darkMode ? "text-white" : "text-gray-800"
+        }`}
+      >
+        <div
+          className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
+            darkMode
+              ? "bg-green-900/30 text-green-400"
+              : "bg-green-100 text-green-600"
+          }`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-10 w-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Payment Successful!</h2>
+        <p
+          className={`text-lg ${darkMode ? "text-gray-300" : "text-gray-600"}`}
+        >
+          Your order is being confirmed...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className={`space-y-6 ${darkMode ? "text-white" : "text-gray-800"}`}>

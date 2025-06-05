@@ -7,6 +7,7 @@ import { SkipSizeStep } from "./componants/steps/SkipSizeStep";
 import { SkipPlacementStep } from "./componants/steps/SkipPlacementStep";
 import { DeliveryDateStep } from "./componants/steps/DeliveryDateStep";
 import { OrderSummaryStep } from "./componants/steps/OrderSummaryStep";
+import { ConfirmationStep } from "./componants/steps/ConfirmationStep";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
@@ -48,6 +49,10 @@ function App() {
           <OrderSummaryStep {...props} darkMode={darkMode} />
         </Elements>
       ),
+    },
+    {
+      name: "Confirmation",
+      component: (props) => <ConfirmationStep {...props} darkMode={darkMode} />,
     },
   ];
 
