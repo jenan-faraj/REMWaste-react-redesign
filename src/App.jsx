@@ -5,6 +5,7 @@ import { AddressStep } from "./componants/steps/AddressStep";
 import { WasteTypeStep } from "./componants/steps/WasteTypeStep";
 import { SkipSizeStep } from "./componants/steps/SkipSizeStep";
 import { SkipPlacementStep } from "./componants/steps/SkipPlacementStep";
+import { DeliveryDateStep } from "./componants/steps/DeliveryDateStep";
 import { useDarkMode } from "./hooks/useDarkMode";
 
 function App() {
@@ -28,6 +29,10 @@ function App() {
       component: (props) => (
         <SkipPlacementStep {...props} darkMode={darkMode} />
       ),
+    },
+    {
+      name: "Delivery",
+      component: (props) => <DeliveryDateStep {...props} darkMode={darkMode} />,
     },
   ];
 
