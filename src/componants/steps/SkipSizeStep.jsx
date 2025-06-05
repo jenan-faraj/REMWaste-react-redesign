@@ -12,8 +12,8 @@ export function SkipSizeStep({ nextStep, prevStep, darkMode, formData }) {
           "https://app.wewantwaste.co.uk/api/skips/by-location",
           {
             params: {
-              postcode: "NR32",
-              area: "Lowestoft",
+              postcode: formData?.postcode || "NR32",
+              area: formData?.area || "Lowestoft",
             },
           }
         );
@@ -24,7 +24,7 @@ export function SkipSizeStep({ nextStep, prevStep, darkMode, formData }) {
     };
 
     fetchSkipSizes();
-  }, []);
+  }, [formData]);
 
   const handleSkipSelect = (skip) => {
     setSelectedSkip(skip);
@@ -32,7 +32,8 @@ export function SkipSizeStep({ nextStep, prevStep, darkMode, formData }) {
 
   const handleContinue = () => {
     if (selectedSkip) {
-      localStorage.setItem("selectedSkipId", selectedSkip.id);
+      // Store the entire skip object in localStorage
+      localStorage.setItem("selectedSkip", JSON.stringify(selectedSkip));
       nextStep({ skipSize: selectedSkip });
     }
   };

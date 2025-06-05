@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { Building } from "lucide-react";
 import { DarkModeToggle } from "./componants/DarkModeToggle";
 import { MultiStepForm } from "./componants/MultiStepForm";
 import { AddressStep } from "./componants/steps/AddressStep";
 import { WasteTypeStep } from "./componants/steps/WasteTypeStep";
 import { SkipSizeStep } from "./componants/steps/SkipSizeStep";
+import { SkipPlacementStep } from "./componants/steps/SkipPlacementStep";
 import { useDarkMode } from "./hooks/useDarkMode";
 
 function App() {
@@ -22,6 +22,12 @@ function App() {
     {
       name: "Skip Size",
       component: (props) => <SkipSizeStep {...props} darkMode={darkMode} />,
+    },
+    {
+      name: "Placement",
+      component: (props) => (
+        <SkipPlacementStep {...props} darkMode={darkMode} />
+      ),
     },
   ];
 
