@@ -1,68 +1,89 @@
-import SkipHireApp from "./componants/SkipHireApp";
+import { useState } from "react";
+import { Building } from "lucide-react";
+import { DarkModeToggle } from "./componants/DarkModeToggle";
+import { MultiStepForm } from "./componants/MultiStepForm";
+import { AddressStep } from "./componants/steps/AddressStep";
+import { WasteTypeStep } from "./componants/steps/WasteTypeStep";
+import { SkipSizeStep } from "./componants/steps/SkipSizeStep";
+import { useDarkMode } from "./hooks/useDarkMode";
 
-export default function App() {
+function App() {
+  const [darkMode, setDarkMode] = useDarkMode();
+
+  const steps = [
+    {
+      name: "Address",
+      component: (props) => <AddressStep {...props} darkMode={darkMode} />,
+    },
+    {
+      name: "Waste Type",
+      component: (props) => <WasteTypeStep {...props} darkMode={darkMode} />,
+    },
+    {
+      name: "Skip Size",
+      component: (props) => <SkipSizeStep {...props} darkMode={darkMode} />,
+    },
+  ];
+
   return (
-    <>
-      <SkipHireApp />
-    </>
+    <div
+      className={`min-h-screen transition-all duration-500 flex items-center justify-center p-4 ${
+        darkMode
+          ? "bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900"
+          : "bg-gradient-to-br from-blue-300 via-blue-50 to-blue-300"
+      }`}
+    >
+      <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+
+      <div className="relative w-full max-w-md">
+        <div className="text-center mb-8">
+          <div
+            className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 shadow-lg transition-all duration-300 ${
+              darkMode
+                ? "bg-gradient-to-r from-blue-500 to-purple-600"
+                : "bg-gradient-to-r from-blue-400 to-purple-500"
+            }`}
+          >
+            <Building className="w-8 h-8 text-white" />
+          </div>
+          <h1
+            className={`text-5xl font-bold mb-2 tracking-tight transition-colors duration-300 ${
+              darkMode ? "text-white" : "text-gray-800"
+            }`}
+          >
+            SKIP HIRE
+          </h1>
+          <p
+            className={`text-xl italic font-light transition-colors duration-300 ${
+              darkMode ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
+            With A Difference
+          </p>
+        </div>
+
+        <div
+          className={`backdrop-blur-lg rounded-3xl p-8 shadow-2xl border transition-all duration-300 ${
+            darkMode
+              ? "bg-white/10 border-white/20"
+              : "bg-white/20 border-gray-200/50"
+          }`}
+        >
+          <MultiStepForm steps={steps} />
+        </div>
+
+        <div className="text-center mt-6">
+          <span
+            className={`text-sm transition-colors duration-300 ${
+              darkMode ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
+            Version 11.34
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
-// import { useEffect } from "react";
-// import { useSelector, useDispatch } from "react-redux";
-// import { toggleDarkMode, setDarkMode } from "./Redux/darkModeSlice";
 
-// export default function App() {
-//   const darkMode = useSelector((state) => state.darkMode.darkMode);
-//   const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     const savedMode = localStorage.getItem("darkMode");
-//     if (savedMode !== null) {
-//       dispatch(setDarkMode(savedMode === "true"));
-//     }
-//   }, [dispatch]);
-
-//   useEffect(() => {
-//     const root = window.document.documentElement;
-//     if (darkMode) {
-//       root.classList.add("dark");
-//     } else {
-//       root.classList.remove("dark");
-//     }
-//     localStorage.setItem("darkMode", darkMode.toString());
-//   }, [darkMode]);
-
-//   return (
-//     <div
-//       style={{
-//         backgroundColor: darkMode ? "black" : "white",
-//       }}
-//       className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6 transition-colors duration-300 flex flex-col items-center justify-center"
-//     >
-//       <button
-//         onClick={() => dispatch(toggleDarkMode())}
-//         className="mb-8 px-6 py-3 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold shadow-md hover:bg-gray-400 dark:hover:bg-gray-600 transition"
-//       >
-//         {darkMode ? "🌙 Dark Mode" : "☀️ Light Mode"}
-//       </button>
-
-//       <h1
-//         className="text-4xl font-bold mb-4"
-//         style={{
-//           color: darkMode ? "white" : "black",
-//         }}
-//       >
-//         Welcome to Dark Mode with Redux!
-//       </h1>
-//       <p
-//         className="text-lg max-w-md text-center"
-//         style={{
-//           color: darkMode ? "white" : "black",
-//         }}
-//       >
-//         Toggle the mode and see the magic! The background, text, and button
-//         colors all change smoothly.
-//       </p>
-//     </div>
-//   );
-// }
+export default App;
