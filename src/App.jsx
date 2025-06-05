@@ -6,6 +6,13 @@ import { WasteTypeStep } from "./componants/steps/WasteTypeStep";
 import { SkipSizeStep } from "./componants/steps/SkipSizeStep";
 import { SkipPlacementStep } from "./componants/steps/SkipPlacementStep";
 import { DeliveryDateStep } from "./componants/steps/DeliveryDateStep";
+import { OrderSummaryStep } from "./componants/steps/OrderSummaryStep";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51RWjbDBoiNdFyp9lrr93Uhih9zhfCw9Zo8TPjEHtDhKACyY0dPROudjKcrgqm58l2aKrDiYEfvpl6W4fwIoZFadX00lG4AWHDh"
+);
 import { useDarkMode } from "./hooks/useDarkMode";
 
 function App() {
@@ -33,6 +40,14 @@ function App() {
     {
       name: "Delivery",
       component: (props) => <DeliveryDateStep {...props} darkMode={darkMode} />,
+    },
+    {
+      name: "Summary",
+      component: (props) => (
+        <Elements stripe={stripePromise}>
+          <OrderSummaryStep {...props} darkMode={darkMode} />
+        </Elements>
+      ),
     },
   ];
 
