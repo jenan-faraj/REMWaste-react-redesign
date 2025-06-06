@@ -1,7 +1,60 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
-export function SkipSizeStep({ nextStep, prevStep, darkMode, formData }) {
+const skipImages = [
+  {
+    size: "4",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/4-yarder-skip.jpg",
+  },
+  {
+    size: "6",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg",
+  },
+  {
+    size: "8",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/6-yarder-skip.jpg",
+  },
+  {
+    size: "10",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/8-yarder-skip.jpg",
+  },
+  {
+    size: "12",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/10-yarder-skip.jpg",
+  },
+  {
+    size: "14",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/12-yarder-skip.jpg",
+  },
+  {
+    size: "16",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/14-yarder-skip.jpg",
+  },
+  {
+    size: "20",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/20-yarder-skip.jpg",
+  },
+  {
+    size: "40",
+    image:
+      "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/40-yarder-skip.jpg",
+  },
+];
+
+export default function SkipSizeStep({
+  nextStep = () => {},
+  prevStep = () => {},
+  darkMode = false,
+  formData = { postcode: "NR32", area: "Lowestoft" },
+}) {
   const [selectedSkip, setSelectedSkip] = useState(null);
   const [skipSizes, setSkipSizes] = useState([]);
 
@@ -32,132 +85,151 @@ export function SkipSizeStep({ nextStep, prevStep, darkMode, formData }) {
 
   const handleContinue = () => {
     if (selectedSkip) {
-      // Store the entire skip object in localStorage
-      localStorage.setItem("selectedSkip", JSON.stringify(selectedSkip));
+      const selectedSkipData = JSON.stringify(selectedSkip);
+      localStorage.setItem("selectedSkip", selectedSkipData);
       nextStep({ skipSize: selectedSkip });
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2
-          className={`text-2xl font-bold mb-2 ${
-            darkMode ? "text-white" : "text-gray-800"
-          }`}
-        >
-          Choose Your Skip Size
-        </h2>
-        <p className={`${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-          Select the skip size that best suits your needs
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        {skipSizes.map((skip) => (
-          <div
-            key={skip.id}
-            onClick={() => handleSkipSelect(skip)}
-            className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
-              selectedSkip?.id === skip.id
-                ? darkMode
-                  ? "border-blue-400 bg-blue-900/20"
-                  : "border-blue-400 bg-blue-100"
-                : darkMode
-                ? "border-gray-600 hover:border-gray-500 hover:bg-gray-700/50"
-                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+    <div className="min-h-screen bg-gradient-to-br p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="text-center">
+          <h2
+            className={`text-3xl font-bold mb-4 ${
+              darkMode ? "text-white" : "text-gray-800"
             }`}
           >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3
-                  className={`font-semibold ${
-                    darkMode ? "text-white" : "text-gray-800"
-                  }`}
-                >
-                  {skip.size} Yard Skip
-                </h3>
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-300" : "text-gray-600"
-                  }`}
-                >
-                  {skip.hire_period_days} day hire period
-                </p>
-              </div>
-              <div className="text-right">
-                <p
-                  className={`font-bold ${
-                    darkMode ? "text-blue-300" : "text-blue-600"
-                  }`}
-                >
-                  £{(skip.price_before_vat * (1 + skip.vat / 100)).toFixed(2)}
-                </p>
-                <p
-                  className={`text-xs ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  inc. VAT
-                </p>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-dashed border-gray-400/30">
-              <button
-                className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
-                  selectedSkip?.id === skip.id
-                    ? darkMode
-                      ? "bg-blue-600 text-white"
-                      : "bg-blue-500 text-white"
-                    : darkMode
-                    ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
-              >
-                {selectedSkip?.id === skip.id
-                  ? "Selected"
-                  : "Select This Skip →"}
-              </button>
-            </div>
+            Choose Your Skip Size
+          </h2>
+          <p
+            className={`text-lg ${
+              darkMode ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
+            Select the skip size that best suits your needs
+          </p>
+        </div>
+
+        {skipSizes.length === 0 && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p
+              className={`mt-4 ${darkMode ? "text-gray-300" : "text-gray-600"}`}
+            >
+              Loading skip sizes...
+            </p>
           </div>
-        ))}
-      </div>
+        )}
 
-      <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-        <p
-          className={`text-xs text-center mb-4 ${
-            darkMode ? "text-gray-400" : "text-gray-500"
-          }`}
-        >
-          Images and information shown throughout this website may not reflect
-          the exact shape or size specification, colours may vary, options
-          and/or accessories may be featured at additional cost.
-        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skipSizes.map((skip) => (
+            <div
+              key={skip.id}
+              className={`relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer transform hover:scale-105 ${
+                selectedSkip?.id === skip.id
+                  ? "ring-4 ring-blue-500 shadow-2xl scale-105"
+                  : "hover:shadow-xl"
+              } bg-gray-900 shadow-lg`}
+              onClick={() => handleSkipSelect(skip)}
+            >
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={
+                    skipImages.find((img) => img.size === String(skip.size))
+                      ?.image ??
+                    "https://via.placeholder.com/400x300/3B82F6/ffffff?text=Skip+Image"
+                  }
+                  alt={`${skip.size} Yard Skip`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/400x300/3B82F6/ffffff?text=Skip+Image";
+                  }}
+                />
 
-        <div className="flex justify-between">
-          <button
-            onClick={prevStep}
-            className={`px-6 py-3 rounded-xl font-medium transition-colors ${
-              darkMode
-                ? "bg-gray-700 hover:bg-gray-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            Back
-          </button>
-          <button
-            onClick={handleContinue}
-            disabled={!selectedSkip}
-            className={`px-6 py-3 rounded-xl font-medium text-white transition-colors ${
-              selectedSkip
-                ? darkMode
-                  ? "bg-blue-600 hover:bg-blue-500"
-                  : "bg-blue-500 hover:bg-blue-600"
-                : "bg-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Continue →
-          </button>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+
+                <div className="absolute top-4 right-4 z-10">
+                  <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                    {skip.size} Yards
+                  </span>
+                </div>
+
+                {!skip.allowed_on_road && (
+                  <div className="absolute bottom-4 left-4 z-10">
+                    <div className="flex items-center bg-black/70 text-yellow-400 px-3 py-2 rounded-lg text-xs font-semibold">
+                      <span className="mr-2">⚠️</span>
+                      Not Allowed On The Road
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 bg-gray-900">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold mb-2 text-white">
+                    {skip.size} Yard Skip
+                  </h3>
+                  <p className="text-sm text-gray-400">
+                    {skip.hire_period_days} day hire period
+                  </p>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex items-baseline">
+                    <span className="text-3xl font-bold text-blue-400">
+                      £{skip.price_before_vat}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    selectedSkip?.id === skip.id
+                      ? "bg-blue-600 text-white shadow-lg transform scale-105"
+                      : "bg-gray-700 text-gray-300 hover:bg-gray-600 border border-gray-600"
+                  }`}
+                >
+                  {selectedSkip?.id === skip.id
+                    ? "✓ Selected"
+                    : "Select This Skip →"}
+                </button>
+              </div>
+
+              {selectedSkip?.id === skip.id && (
+                <div className="absolute inset-0 bg-blue-500/10 pointer-events-none border-4 border-blue-500 rounded-2xl"></div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-between max-w-md mx-auto">
+            <button
+              onClick={prevStep}
+              className={`px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 ${
+                darkMode
+                  ? "bg-gray-700 hover:bg-gray-600 text-white shadow-lg"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800 shadow-md"
+              }`}
+            >
+              ← Back
+            </button>
+            <button
+              onClick={handleContinue}
+              disabled={!selectedSkip}
+              className={`px-8 py-3 rounded-xl font-medium text-white transition-all duration-200 transform hover:scale-105 ${
+                selectedSkip
+                  ? darkMode
+                    ? "bg-blue-600 hover:bg-blue-500 shadow-lg"
+                    : "bg-blue-500 hover:bg-blue-600 shadow-md"
+                  : "bg-gray-500 cursor-not-allowed opacity-50"
+              }`}
+            >
+              Continue →
+            </button>
+          </div>
         </div>
       </div>
     </div>

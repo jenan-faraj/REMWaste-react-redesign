@@ -55,140 +55,100 @@ export function SkipPlacementStep({ nextStep, prevStep, darkMode, formData }) {
     );
   }
 
-  if (skipData && !skipData.allowed_on_road && !placementType) {
-    return (
-      <div className="space-y-6">
+  return (
+    <div className="space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {showPhotoPopup && (
+          <SkipPlacementPhotoPopup
+            onClose={handleSkipPhoto}
+            onPhotoUpload={handlePhotoUpload}
+            darkMode={darkMode}
+          />
+        )}
+
         <div>
           <h1
             className={`text-2xl font-bold mb-2 ${
               darkMode ? "text-white" : "text-gray-800"
             }`}
           >
-            Road Placement Not Available
+            Where will the skip be placed?
           </h1>
           <p className={`${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-            The skip size that you've chosen cannot be placed on public roads
-            due to road safety regulations. Please ensure you have adequate
-            private space or choose a different skip size.
+            This helps us determine if you need a permit for your skip.
           </p>
         </div>
 
-        <div className="flex justify-between pt-4">
-          <button
-            onClick={prevStep}
-            className={`px-6 py-3 rounded-xl font-medium transition-colors ${
-              darkMode
-                ? "bg-gray-700 hover:bg-gray-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            Back
-          </button>
-          <button
-            onClick={prevStep}
-            className={`px-6 py-3 rounded-xl font-medium text-white transition-colors ${
-              darkMode
-                ? "bg-blue-600 hover:bg-blue-500"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            Choose Different Skip
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {showPhotoPopup && (
-        <SkipPlacementPhotoPopup
-          onClose={handleSkipPhoto}
-          onPhotoUpload={handlePhotoUpload}
-          darkMode={darkMode}
-        />
-      )}
-
-      <div>
-        <h1
-          className={`text-2xl font-bold mb-2 ${
-            darkMode ? "text-white" : "text-gray-800"
-          }`}
-        >
-          Where will the skip be placed?
-        </h1>
-        <p className={`${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-          This helps us determine if you need a permit for your skip.
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        <div
-          onClick={() => handlePlacementSelect("private")}
-          className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
-            placementType === "private"
-              ? darkMode
-                ? "border-green-400 bg-green-900/20"
-                : "border-green-400 bg-green-100"
-              : darkMode
-              ? "border-gray-600 hover:border-gray-500 hover:bg-gray-700/50"
-              : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-          }`}
-        >
-          <div className="flex items-start space-x-3">
-            <div
-              className={`flex-shrink-0 w-5 h-5 mt-0.5 rounded-full border flex items-center justify-center ${
-                placementType === "private"
-                  ? darkMode
-                    ? "border-green-400 bg-green-400"
-                    : "border-green-500 bg-green-500"
-                  : darkMode
-                  ? "border-gray-400"
-                  : "border-gray-300"
-              }`}
-            >
-              {placementType === "private" && (
-                <div className="w-2 h-2 rounded-full bg-white"></div>
-              )}
-            </div>
-            <div>
-              <h3
-                className={`font-semibold ${
-                  darkMode ? "text-white" : "text-gray-800"
-                }`}
-              >
-                Private Property
-              </h3>
-              <p
-                className={`text-sm ${
-                  darkMode ? "text-gray-300" : "text-gray-600"
-                }`}
-              >
-                Driveway or private land
-              </p>
-              <p
-                className={`text-sm mt-2 ${
-                  darkMode ? "text-green-300" : "text-green-600"
-                }`}
-              >
-                No permit required when placed on your private property
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {skipData?.allowed_on_road && (
+        <div className="space-y-4">
           <div
-            onClick={() => handlePlacementSelect("public")}
+            onClick={() => handlePlacementSelect("private")}
             className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
-              placementType === "public"
+              placementType === "private"
                 ? darkMode
-                  ? "border-blue-400 bg-blue-900/20"
-                  : "border-blue-400 bg-blue-100"
+                  ? "border-green-400 bg-green-900/20"
+                  : "border-green-400 bg-green-100"
                 : darkMode
                 ? "border-gray-600 hover:border-gray-500 hover:bg-gray-700/50"
                 : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
             }`}
+          >
+            <div className="flex items-start space-x-3">
+              <div
+                className={`flex-shrink-0 w-5 h-5 mt-0.5 rounded-full border flex items-center justify-center ${
+                  placementType === "private"
+                    ? darkMode
+                      ? "border-green-400 bg-green-400"
+                      : "border-green-500 bg-green-500"
+                    : darkMode
+                    ? "border-gray-400"
+                    : "border-gray-300"
+                }`}
+              >
+                {placementType === "private" && (
+                  <div className="w-2 h-2 rounded-full bg-white"></div>
+                )}
+              </div>
+              <div>
+                <h3
+                  className={`font-semibold ${
+                    darkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
+                  Private Property
+                </h3>
+                <p
+                  className={`text-sm ${
+                    darkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
+                  Driveway or private land
+                </p>
+                <p
+                  className={`text-sm mt-2 ${
+                    darkMode ? "text-green-300" : "text-green-600"
+                  }`}
+                >
+                  No permit required when placed on your private property
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={`p-4 border rounded-xl transition-all duration-200 ${
+              !skipData?.allowed_on_road
+                ? "opacity-50 cursor-not-allowed"
+                : placementType === "public"
+                ? darkMode
+                  ? "border-blue-400 bg-blue-900/20 cursor-pointer"
+                  : "border-blue-400 bg-blue-100 cursor-pointer"
+                : darkMode
+                ? "border-gray-600 hover:border-gray-500 hover:bg-gray-700/50 cursor-pointer"
+                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 cursor-pointer"
+            }`}
+            onClick={() =>
+              skipData?.allowed_on_road && handlePlacementSelect("public")
+            }
           >
             <div className="flex items-start space-x-3">
               <div
@@ -213,6 +173,11 @@ export function SkipPlacementStep({ nextStep, prevStep, darkMode, formData }) {
                   }`}
                 >
                   Public Road
+                  {!skipData?.allowed_on_road && (
+                    <span className="text-xs text-red-500 ml-2">
+                      (Not Available)
+                    </span>
+                  )}
                 </h3>
                 <p
                   className={`text-sm ${
@@ -221,85 +186,91 @@ export function SkipPlacementStep({ nextStep, prevStep, darkMode, formData }) {
                 >
                   Council or public property
                 </p>
-                <p
-                  className={`text-sm mt-2 ${
-                    darkMode ? "text-yellow-300" : "text-yellow-600"
-                  }`}
-                >
-                  Permit required for placement on public roads
-                </p>
+                {skipData?.allowed_on_road ? (
+                  <p
+                    className={`text-sm mt-2 ${
+                      darkMode ? "text-yellow-300" : "text-yellow-600"
+                    }`}
+                  >
+                    Permit required for placement on public roads
+                  </p>
+                ) : (
+                  <p className="text-sm mt-2 text-red-500">
+                    This skip size cannot be placed on public roads
+                  </p>
+                )}
               </div>
             </div>
           </div>
-        )}
-      </div>
-
-      {placementType === "public" && (
-        <div
-          className={`p-4 rounded-xl border ${
-            darkMode
-              ? "bg-gray-800/50 border-gray-600"
-              : "bg-gray-100 border-gray-200"
-          }`}
-        >
-          <h3
-            className={`font-semibold mb-2 ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            Permit Required
-          </h3>
-          <p
-            className={`text-sm ${
-              darkMode ? "text-gray-300" : "text-gray-600"
-            }`}
-          >
-            A permit is required when placing a skip on a public road. We'll
-            handle the permit application process for you.
-          </p>
-
-          <h3
-            className={`font-semibold mt-4 mb-2 ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            Processing Time
-          </h3>
-          <p
-            className={`text-sm ${
-              darkMode ? "text-gray-300" : "text-gray-600"
-            }`}
-          >
-            The council requires 5 working days notice to process permit
-            applications. Please plan your delivery date accordingly.
-          </p>
         </div>
-      )}
 
-      <div className="flex justify-between pt-4">
-        <button
-          onClick={prevStep}
-          className={`px-6 py-3 rounded-xl font-medium transition-colors ${
-            darkMode
-              ? "bg-gray-700 hover:bg-gray-600 text-white"
-              : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-          }`}
-        >
-          Back
-        </button>
-        <button
-          onClick={handleContinue}
-          disabled={!placementType}
-          className={`px-6 py-3 rounded-xl font-medium text-white transition-colors ${
-            placementType
-              ? darkMode
-                ? "bg-blue-600 hover:bg-blue-500"
-                : "bg-blue-500 hover:bg-blue-600"
-              : "bg-gray-500 cursor-not-allowed"
-          }`}
-        >
-          Continue →
-        </button>
+        {placementType === "public" && (
+          <div
+            className={`p-4 rounded-xl border ${
+              darkMode
+                ? "bg-gray-800/50 border-gray-600"
+                : "bg-gray-100 border-gray-200"
+            }`}
+          >
+            <h3
+              className={`font-semibold mb-2 ${
+                darkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
+              Permit Required
+            </h3>
+            <p
+              className={`text-sm ${
+                darkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              A permit is required when placing a skip on a public road. We'll
+              handle the permit application process for you.
+            </p>
+
+            <h3
+              className={`font-semibold mt-4 mb-2 ${
+                darkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
+              Processing Time
+            </h3>
+            <p
+              className={`text-sm ${
+                darkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              The council requires 5 working days notice to process permit
+              applications. Please plan your delivery date accordingly.
+            </p>
+          </div>
+        )}
+
+        <div className="flex justify-between pt-4">
+          <button
+            onClick={prevStep}
+            className={`px-6 py-3 rounded-xl font-medium transition-colors ${
+              darkMode
+                ? "bg-gray-700 hover:bg-gray-600 text-white"
+                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+            }`}
+          >
+            Back
+          </button>
+          <button
+            onClick={handleContinue}
+            disabled={!placementType}
+            className={`px-6 py-3 rounded-xl font-medium text-white transition-colors ${
+              placementType
+                ? darkMode
+                  ? "bg-blue-600 hover:bg-blue-500"
+                  : "bg-blue-500 hover:bg-blue-600"
+                : "bg-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Continue →
+          </button>
+        </div>
       </div>
     </div>
   );

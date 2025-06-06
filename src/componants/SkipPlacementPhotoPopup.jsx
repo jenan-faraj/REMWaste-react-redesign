@@ -30,7 +30,7 @@ export default function SkipPlacementPhotoPopup({
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ${
+      className={`fixed inset-0 h-screen bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50 ${
         darkMode ? "dark" : ""
       }`}
     >
@@ -147,16 +147,6 @@ export default function SkipPlacementPhotoPopup({
             Cancel
           </button>
           <div className="flex space-x-2">
-            <button
-              onClick={onClose}
-              className={`px-4 py-2 rounded-lg font-medium ${
-                darkMode
-                  ? "bg-gray-700 hover:bg-gray-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-              }`}
-            >
-              Skip this step
-            </button>
             <button
               onClick={handleUpload}
               disabled={!selectedFile}
