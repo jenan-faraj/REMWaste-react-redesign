@@ -57,10 +57,12 @@ export default function SkipSizeStep({
 }) {
   const [selectedSkip, setSelectedSkip] = useState(null);
   const [skipSizes, setSkipSizes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchSkipSizes = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(
           "https://app.wewantwaste.co.uk/api/skips/by-location",
           {
@@ -73,6 +75,8 @@ export default function SkipSizeStep({
         setSkipSizes(response.data);
       } catch (error) {
         console.error("Error fetching skip sizes:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -92,11 +96,11 @@ export default function SkipSizeStep({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className={`min-h-screen p-6 `}>
+      <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center">
           <h2
-            className={`text-3xl font-bold mb-4 ${
+            className={`text-3xl font-bold mb-2 ${
               darkMode ? "text-white" : "text-gray-800"
             }`}
           >
@@ -111,7 +115,7 @@ export default function SkipSizeStep({
           </p>
         </div>
 
-        {skipSizes.length === 0 && (
+        {isLoading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p
@@ -120,117 +124,185 @@ export default function SkipSizeStep({
               Loading skip sizes...
             </p>
           </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skipSizes.map((skip) => (
-            <div
-              key={skip.id}
-              className={`relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer transform hover:scale-105 ${
-                selectedSkip?.id === skip.id
-                  ? "ring-4 ring-blue-500 shadow-2xl scale-105"
-                  : "hover:shadow-xl"
-              } bg-gray-900 shadow-lg`}
-              onClick={() => handleSkipSelect(skip)}
+        ) : skipSizes.length === 0 ? (
+          <div
+            className={`text-center py-12 rounded-xl ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            } p-6 shadow-md`}
+          >
+            <p
+              className={`text-lg ${
+                darkMode ? "text-gray-300" : "text-gray-600"
+              }`}
             >
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={
-                    skipImages.find((img) => img.size === String(skip.size))
-                      ?.image ??
-                    "https://via.placeholder.com/400x300/3B82F6/ffffff?text=Skip+Image"
-                  }
-                  alt={`${skip.size} Yard Skip`}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src =
-                      "https://via.placeholder.com/400x300/3B82F6/ffffff?text=Skip+Image";
-                  }}
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-
-                <div className="absolute top-4 right-4 z-10">
-                  <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                    {skip.size} Yards
-                  </span>
-                </div>
-
-                {!skip.allowed_on_road && (
-                  <div className="absolute bottom-4 left-4 z-10">
-                    <div className="flex items-center bg-black/70 text-yellow-400 px-3 py-2 rounded-lg text-xs font-semibold">
-                      <span className="mr-2">⚠️</span>
-                      Not Allowed On The Road
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="p-6 bg-gray-900">
-                <div className="mb-4">
-                  <h3 className="text-xl font-bold mb-2 text-white">
-                    {skip.size} Yard Skip
-                  </h3>
-                  <p className="text-sm text-gray-400">
-                    {skip.hire_period_days} day hire period
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex items-baseline">
-                    <span className="text-3xl font-bold text-blue-400">
-                      £{skip.price_before_vat}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
-                    selectedSkip?.id === skip.id
-                      ? "bg-blue-600 text-white shadow-lg transform scale-105"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600 border border-gray-600"
-                  }`}
-                >
-                  {selectedSkip?.id === skip.id
-                    ? "✓ Selected"
-                    : "Select This Skip →"}
-                </button>
-              </div>
-
-              {selectedSkip?.id === skip.id && (
-                <div className="absolute inset-0 bg-blue-500/10 pointer-events-none border-4 border-blue-500 rounded-2xl"></div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between max-w-md mx-auto">
+              No skip sizes available for your location.
+            </p>
             <button
               onClick={prevStep}
-              className={`px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 ${
+              className={`mt-4 px-6 py-2 rounded-lg font-medium ${
                 darkMode
-                  ? "bg-gray-700 hover:bg-gray-600 text-white shadow-lg"
-                  : "bg-gray-200 hover:bg-gray-300 text-gray-800 shadow-md"
+                  ? "bg-gray-700 hover:bg-gray-600 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
               }`}
             >
-              ← Back
-            </button>
-            <button
-              onClick={handleContinue}
-              disabled={!selectedSkip}
-              className={`px-8 py-3 rounded-xl font-medium text-white transition-all duration-200 transform hover:scale-105 ${
-                selectedSkip
-                  ? darkMode
-                    ? "bg-blue-600 hover:bg-blue-500 shadow-lg"
-                    : "bg-blue-500 hover:bg-blue-600 shadow-md"
-                  : "bg-gray-500 cursor-not-allowed opacity-50"
-              }`}
-            >
-              Continue →
+              Try a different location
             </button>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {skipSizes.map((skip) => {
+                const skipImage = skipImages.find(
+                  (img) => img.size === String(skip.size)
+                )?.image;
+
+                return (
+                  <div
+                    key={skip.id}
+                    className={`relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer transform hover:scale-[1.02] ${
+                      selectedSkip?.id === skip.id
+                        ? "ring-3 ring-blue-500 shadow-lg"
+                        : "hover:shadow-md"
+                    } ${darkMode ? "bg-gray-800" : "bg-white"}`}
+                    onClick={() => handleSkipSelect(skip)}
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={
+                          skipImage ||
+                          "https://via.placeholder.com/400x300/3B82F6/ffffff?text=Skip+Image"
+                        }
+                        alt={`${skip.size} Yard Skip`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://via.placeholder.com/400x300/3B82F6/ffffff?text=Skip+Image";
+                        }}
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+
+                      <div className="absolute top-4 right-4 z-10">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-bold shadow-lg ${
+                            darkMode
+                              ? "bg-blue-700 text-white"
+                              : "bg-blue-600 text-white"
+                          }`}
+                        >
+                          {skip.size} Yard{skip.size !== "1" ? "s" : ""}
+                        </span>
+                      </div>
+
+                      {!skip.allowed_on_road && (
+                        <div className="absolute bottom-4 left-4 z-10">
+                          <div
+                            className={`flex items-center px-2 py-1 rounded-lg text-xs font-semibold ${
+                              darkMode
+                                ? "bg-black/70 text-yellow-400"
+                                : "bg-white/90 text-yellow-700"
+                            }`}
+                          >
+                            <span className="mr-1">⚠️</span>
+                            Not Allowed On Road
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div
+                      className={`p-5 ${darkMode ? "bg-gray-800" : "bg-white"}`}
+                    >
+                      <div className="mb-4">
+                        <h3
+                          className={`text-xl font-bold mb-1 ${
+                            darkMode ? "text-white" : "text-gray-800"
+                          }`}
+                        >
+                          {skip.size} Yard Skip
+                        </h3>
+                        <p
+                          className={`text-sm ${
+                            darkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          {skip.hire_period_days} day hire period
+                        </p>
+                      </div>
+
+                      <div className="mb-5">
+                        <div className="flex items-baseline">
+                          <span
+                            className={`text-2xl font-bold ${
+                              darkMode ? "text-blue-400" : "text-blue-600"
+                            }`}
+                          >
+                            £{skip.price_before_vat}
+                          </span>
+                          <span
+                            className={`ml-1 text-sm ${
+                              darkMode ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            +VAT
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-all duration-200 ${
+                          selectedSkip?.id === skip.id
+                            ? darkMode
+                              ? "bg-blue-700 text-white"
+                              : "bg-blue-600 text-white"
+                            : darkMode
+                            ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                        }`}
+                      >
+                        {selectedSkip?.id === skip.id
+                          ? "✓ Selected"
+                          : "Select This Skip"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              className={`pt-6 border-t ${
+                darkMode ? "border-gray-700" : "border-gray-200"
+              }`}
+            >
+              <div className="flex justify-between max-w-md mx-auto">
+                <button
+                  onClick={prevStep}
+                  className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    darkMode
+                      ? "bg-gray-700 hover:bg-gray-600 text-white"
+                      : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                  }`}
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleContinue}
+                  disabled={!selectedSkip}
+                  className={`px-6 py-2 rounded-lg font-medium text-white transition-all duration-200 ${
+                    selectedSkip
+                      ? darkMode
+                        ? "bg-blue-700 hover:bg-blue-600"
+                        : "bg-blue-600 hover:bg-blue-700"
+                      : "bg-gray-500 cursor-not-allowed opacity-70"
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

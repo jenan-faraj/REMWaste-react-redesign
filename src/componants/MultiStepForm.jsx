@@ -1,9 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DarkModeToggle } from "../componants/DarkModeToggle";
 
 export function MultiStepForm({ steps, darkMode, setDarkMode }) {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(() => {
+    const saved = localStorage.getItem("currentStep");
+    return saved ? Number(saved) : 0;
+  });
+  
   const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    const savedStep = localStorage.getItem("currentStep");
+    if (savedStep) {
+      setCurrentStep(Number(savedStep));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("currentStep", currentStep);
+  }, [currentStep]);
 
   const nextStep = (data = {}) => {
     setFormData({ ...formData, ...data });
@@ -69,7 +84,6 @@ export function MultiStepForm({ steps, darkMode, setDarkMode }) {
       </div>
 
       <div className="pt-24">
-        {" "}
         <CurrentStepComponent
           nextStep={nextStep}
           prevStep={prevStep}

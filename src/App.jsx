@@ -1,6 +1,6 @@
 import { MultiStepForm } from "./componants/MultiStepForm";
 import { AddressStep } from "./componants/steps/AddressStep";
-import { WasteTypeStep } from "./componants/steps/WasteTypeStep";
+import WasteTypeStep from "./componants/steps/WasteTypeStep";
 import SkipSizeStep from "./componants/steps/SkipSizeStep";
 import { SkipPlacementStep } from "./componants/steps/SkipPlacementStep";
 import { DeliveryDateStep } from "./componants/steps/DeliveryDateStep";
@@ -19,7 +19,7 @@ function App() {
 
   const steps = [
     {
-      name: "Address",
+      name: "Postcode",
       component: (props) => <AddressStep {...props} darkMode={darkMode} />,
     },
     {
@@ -27,21 +27,21 @@ function App() {
       component: (props) => <WasteTypeStep {...props} darkMode={darkMode} />,
     },
     {
-      name: "Skip Size",
+      name: "Select Skip",
       component: (props) => <SkipSizeStep {...props} darkMode={darkMode} />,
     },
     {
-      name: "Placement",
+      name: "Permit Check",
       component: (props) => (
         <SkipPlacementStep {...props} darkMode={darkMode} />
       ),
     },
     {
-      name: "Delivery",
+      name: "Choose Date",
       component: (props) => <DeliveryDateStep {...props} darkMode={darkMode} />,
     },
     {
-      name: "Summary",
+      name: "Payment",
       component: (props) => (
         <Elements stripe={stripePromise}>
           <OrderSummaryStep {...props} darkMode={darkMode} />

@@ -1,12 +1,30 @@
 import { useState, useEffect } from "react";
+import WasteTypePopup from "../WasteTypePopup";
+import HeavyWastePopup from "../HeavyWastePopup";
+import YesPopup from "../YesPopup";
 
-export function WasteTypeStep({ nextStep, prevStep, darkMode }) {
+export default function WasteTypeStep({ nextStep, prevStep, darkMode }) {
   const [selectedWasteTypes, setSelectedWasteTypes] = useState([]);
+  const [showWasteTypePopup, setShowWasteTypePopup] = useState(false);
+  const [showHeavyWastePopup, setShowHeavyWastePopup] = useState(false);
+  const [showYesPopup, setShowYesPopup] = useState(false);
+  const [heavyWasteTypes, setHeavyWasteTypes] = useState([]);
+  const [heavyWastePercentage, setHeavyWastePercentage] = useState("");
 
   useEffect(() => {
     const savedWasteTypes = localStorage.getItem("selectedWasteTypes");
     if (savedWasteTypes) {
       setSelectedWasteTypes(JSON.parse(savedWasteTypes));
+    }
+
+    const savedHeavyWasteTypes = localStorage.getItem("heavyWasteTypes");
+    if (savedHeavyWasteTypes) {
+      setHeavyWasteTypes(JSON.parse(savedHeavyWasteTypes));
+    }
+
+    const savedPercentage = localStorage.getItem("heavyWastePercentage");
+    if (savedPercentage) {
+      setHeavyWastePercentage(savedPercentage);
     }
   }, []);
 
@@ -22,6 +40,37 @@ export function WasteTypeStep({ nextStep, prevStep, darkMode }) {
       "selectedWasteTypes",
       JSON.stringify(newSelectedTypes)
     );
+
+    if (
+      (type === "Construction Waste" && !selectedWasteTypes.includes(type)) ||
+      (type === "Garden Waste" && !selectedWasteTypes.includes(type))
+    ) {
+      setShowWasteTypePopup(true);
+    }
+  };
+
+  const handleHeavyWasteTypesConfirm = (types) => {
+    setHeavyWasteTypes(types);
+    localStorage.setItem("heavyWasteTypes", JSON.stringify(types));
+    setShowWasteTypePopup(false);
+
+    if (types.length === 0) {
+      setShowYesPopup(true);
+    } else {
+      setTimeout(() => {
+        setShowHeavyWastePopup(true);
+      }, 300);
+    }
+  };
+
+  const handleHeavyWastePercentageSelect = (percentage) => {
+    setHeavyWastePercentage(percentage);
+    localStorage.setItem("heavyWastePercentage", percentage);
+    setShowHeavyWastePopup(false);
+
+    setTimeout(() => {
+      setShowYesPopup(true);
+    }, 300);
   };
 
   const isSelected = (type) => selectedWasteTypes.includes(type);
@@ -92,6 +141,34 @@ export function WasteTypeStep({ nextStep, prevStep, darkMode }) {
               >
                 {waste.description}
               </p>
+
+              {waste.id === "Construction Waste" &&
+                isSelected(waste.id) &&
+                heavyWasteTypes.length > 0 && (
+                  <div className="mt-2">
+                    <p
+                      className={`text-xs ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      Selected heavy waste:
+                    </p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {heavyWasteTypes.map((type) => (
+                        <span
+                          key={type}
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            darkMode
+                              ? "bg-blue-900 text-blue-200"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
           ))}
         </div>
@@ -110,7 +187,13 @@ export function WasteTypeStep({ nextStep, prevStep, darkMode }) {
             Back
           </button>
           <button
-            onClick={() => nextStep({ wasteTypes: selectedWasteTypes })}
+            onClick={() =>
+              nextStep({
+                wasteTypes: selectedWasteTypes,
+                heavyWasteTypes: heavyWasteTypes,
+                heavyWastePercentage: heavyWastePercentage,
+              })
+            }
             disabled={selectedWasteTypes.length === 0}
             className={`flex-1 sm:flex-none px-4 cursor-pointer sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-lg font-medium text-sm sm:text-base lg:text-lg text-white transition-all hover:scale-105 disabled:hover:scale-100 ${
               darkMode
@@ -122,6 +205,32 @@ export function WasteTypeStep({ nextStep, prevStep, darkMode }) {
           </button>
         </div>
       </div>
+
+      {showWasteTypePopup && (
+        <WasteTypePopup
+          darkMode={darkMode}
+          onConfirm={handleHeavyWasteTypesConfirm}
+          onClose={() => setShowWasteTypePopup(false)}
+          initialSelected={heavyWasteTypes}
+        />
+      )}
+
+      {showHeavyWastePopup && (
+        <HeavyWastePopup
+          isOpen={showHeavyWastePopup}
+          onClose={() => setShowHeavyWastePopup(false)}
+          onSelect={handleHeavyWastePercentageSelect}
+          darkMode={darkMode}
+        />
+      )}
+
+      {showYesPopup && (
+        <YesPopup
+          onClose={() => setShowYesPopup(false)}
+          nextStep={nextStep}
+          darkMode={darkMode}
+        />
+      )}
     </div>
   );
 }

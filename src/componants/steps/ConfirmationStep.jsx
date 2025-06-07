@@ -1,6 +1,6 @@
 import { CheckCircle, Home, Calendar, CreditCard, MapPin } from "lucide-react";
 
-export function ConfirmationStep({ darkMode, formData, onBackToFirstStep }) {
+export function ConfirmationStep({ darkMode, formData }) {
   const deliveryDate = localStorage.getItem("deliveryDate");
   const collectionDate = localStorage.getItem("collectionDate");
   const skipHireAddress = JSON.parse(localStorage.getItem("skipHireAddress"));
@@ -10,6 +10,16 @@ export function ConfirmationStep({ darkMode, formData, onBackToFirstStep }) {
   const subtotal = selectedSkip.price_before_vat;
   const vat = selectedSkip.price_before_vat * 0.2;
   const total = subtotal + vat;
+
+  function onBackToFirstStep() {
+    localStorage.removeItem("currentStep");
+    localStorage.removeItem("deliveryDate");
+    localStorage.removeItem("collectionDate");
+    localStorage.removeItem("selectedWasteTypes");
+    localStorage.removeItem("selectedPlacementType");
+    localStorage.removeItem("paymentMethod");
+    window.location.reload();
+  }
 
   return (
     <div
